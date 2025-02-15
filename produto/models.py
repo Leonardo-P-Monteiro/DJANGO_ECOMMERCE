@@ -1,5 +1,6 @@
 from django.db import models
 from utils.image import resize_image
+from utils.rand import slugify_new
 
 # Create your models here.
 
@@ -14,20 +15,36 @@ class Produto(models.Model):
     descricao_longa = models.TextField()
     imagem = models.ImageField(upload_to='produto_imagens/%Y/%m/', blank=True,
                                null=True)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, null=True, blank=True, max_length=80)
     preco_marketing = models.FloatField()
     preco_marketing_promocional = models.FloatField(default=0)
     tipo = models.CharField(
         default='V',
         max_length=1,
         choices=(
-            ('V', 'Variáveis'),
+            ('V', 'Variável'),
             ('S', 'Simples'),
         )
     )
 
+    # EDITANDO OS PREÇOS PARA O FORMATO BRL E INSERINDO NOMES CORRETOS NOS TÍTULO DO ADMIN.
+    def get_preco_formatado(self):
+        return f'R$ {self.preco_marketing:.2f}'.replace('.', ',')
+    get_preco_formatado.short_description = 'Preço'
+    
+    def get_preco_promocional_formatado(self):
+        return f'R$ {self.preco_marketing_promocional:.2f}'.replace('.', ',')
+    get_preco_promocional_formatado.short_description = 'Preço Promo.'
+
+
     def save(self, *args, **kwargs):
+
+        # DEFININDO SLUG AUTOMATICAMENTE.
+        if not self.slug:
+            slug = slugify_new( self.nome, k=3)
+            self.slug = slug
         
+        # TRATANDO A IMAGEM.
         imagem_nome_atual = self.imagem.name
         imagem_mudou = False
 
@@ -37,7 +54,6 @@ class Produto(models.Model):
             imagem_mudou = imagem_nome_atual != self.imagem.name
         
         if imagem_mudou:
-            print('Redimensionou.')
             resize_image(self.imagem, 800)
 
         return super_save

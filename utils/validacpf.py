@@ -1,3 +1,5 @@
+# TODO Estude esse validador de CPF. Há uma parte que evita CPFs em sequência de
+# de um único dígito. Compreenda como funciona essa parte.
 import re
 
 def valida_cpf(cpf):
