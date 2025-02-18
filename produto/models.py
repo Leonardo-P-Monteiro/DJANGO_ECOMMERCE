@@ -1,6 +1,7 @@
 from django.db import models
 from utils.image import resize_image
 from utils.rand import slugify_new
+from utils.utils import formata_preco
 
 # Create your models here.
 
@@ -17,7 +18,7 @@ class Produto(models.Model):
                                null=True)
     slug = models.SlugField(unique=True, null=True, blank=True, max_length=80)
     preco_marketing = models.FloatField()
-    preco_marketing_promocional = models.FloatField(default=0)
+    preco_marketing_promocional = models.FloatField(default=0, blank=True, null=True)
     tipo = models.CharField(
         default='V',
         max_length=1,
@@ -29,11 +30,11 @@ class Produto(models.Model):
 
     # EDITANDO OS PREÇOS PARA O FORMATO BRL E INSERINDO NOMES CORRETOS NOS TÍTULO DO ADMIN.
     def get_preco_formatado(self):
-        return f'R$ {self.preco_marketing:.2f}'.replace('.', ',')
+        return formata_preco(self.preco_marketing)
     get_preco_formatado.short_description = 'Preço'
     
     def get_preco_promocional_formatado(self):
-        return f'R$ {self.preco_marketing_promocional:.2f}'.replace('.', ',')
+        return formata_preco(self.preco_marketing_promocional)
     get_preco_promocional_formatado.short_description = 'Preço Promo.'
 
 
