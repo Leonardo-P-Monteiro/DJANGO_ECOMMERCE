@@ -27,7 +27,7 @@ class Perfil(models.Model):
         verbose_name = 'Perfil'
         verbose_name_plural = 'Perfis'
 
-    usuario = models.ForeignKey(User,
+    usuario = models.OneToOneField(User,
                              on_delete=models.CASCADE,
                              verbose_name='Usuário')
     idade = models.PositiveIntegerField()
