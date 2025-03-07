@@ -53,29 +53,46 @@ class UserForm(forms.ModelForm):
         error_msg_email_exist = 'E-mail já existe.'
         error_msg_pass_match = 'As senhas não coincidem.'
         error_msg_pass_short = 'Sua senha precisa ser maior ou igual a 6 caracteres.'
+        error_msg_required = 'Este campo é obrigatório.'
 
         # PROCESSAMENTO PARA USUÁRIOS LOGADOS: ATUALIZAR
-        if self.usuario:
+        if self.usuario: # Esse usuário vem da request.user
             if usuario_db:
-                if usuario_data != usuario_db.username: #type: ignore
-                    validation_erros_msg['username'] = error_msg_user_exist
+                if self.usuario.username != usuario_db.username:
+                    validation_erros_msg['username'] = error_msg_user_exist 
 
             if email_data:
-                if email_data == email_db:
+                if email_data != email_db:
                     validation_erros_msg['email'] = error_msg_email_exist
 
             if password_data:
                 if password_data != password_2_data:
                     validation_erros_msg['password'] = error_msg_pass_match
                     validation_erros_msg['password_2'] = error_msg_pass_match
-            
-                if len(password_data) < 6: #type: ignore # Aqui estava dando erro de tipagem mas o script está rodando corretamente.
+
+                if len(password_data) < 6: 
                     validation_erros_msg['password'] = error_msg_pass_short
 
         # PROCESSAMENTO PARA USUÁRIO NÃO LOGADOS: CRIAR
         else:
-            print('\n Não Logado \n')
-            
+            if usuario_db:
+                validation_erros_msg['username'] = error_msg_user_exist 
+
+            if email_db:
+                validation_erros_msg['email'] = error_msg_email_exist
+
+            if not password_data:
+                validation_erros_msg['password'] = error_msg_required
+
+            if not password_2_data:
+                validation_erros_msg['password_2'] = error_msg_required
+
+            if password_data != password_2_data:
+                validation_erros_msg['password'] = error_msg_pass_match
+                validation_erros_msg['password_2'] = error_msg_pass_match
+
+            if len(password_data) < 6:  #type:ignore
+                validation_erros_msg['password'] = error_msg_pass_short
 
         if validation_erros_msg:
             raise forms.ValidationError(validation_erros_msg)

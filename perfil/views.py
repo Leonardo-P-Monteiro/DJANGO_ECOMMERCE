@@ -13,9 +13,13 @@ class BasePerfil(View):
     template_name = 'perfil/criar.html'
 
     def setup(self, *args, **kwargs):
-        super().setup(*args, **kwargs)
+        super().setup(*args, **kwargs) # Se eu quiser posso passar a "request" pra ele também.
+        
+        self.perfil = None
 
         if self.request.user.is_authenticated:
+            self.perfil = models.Perfil.objects.\
+                filter(usuario=self.request.user).first()
             self.contexto = {
                 'userform': forms.UserForm(
                     data= self.request.POST or None, 
@@ -26,8 +30,8 @@ class BasePerfil(View):
                     data= self.request.POST or None
                 )
             }
-        else:
-                    self.contexto = {
+        else:            
+            self.contexto = {
             'userform': forms.UserForm(
                 data= self.request.POST or None
             ),
