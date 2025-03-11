@@ -22,6 +22,9 @@ class UserForm(forms.ModelForm):
         label= 'Confirmação de senha'
     )
 
+    # email = forms.EmailField(required=True, # TODO: Descomenta esse trecho para que o campo de e-mail seja obrigatório.
+    #                          label='Email')
+
     def __init__(self, usuario=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
