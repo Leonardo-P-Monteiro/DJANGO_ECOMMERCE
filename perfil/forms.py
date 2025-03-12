@@ -22,8 +22,8 @@ class UserForm(forms.ModelForm):
         label= 'Confirmação de senha'
     )
 
-    # email = forms.EmailField(required=True, # TODO: Descomenta esse trecho para que o campo de e-mail seja obrigatório.
-    #                          label='Email')
+    email = forms.EmailField(required=True, 
+                             label='Email')
 
     def __init__(self, usuario=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -51,7 +51,6 @@ class UserForm(forms.ModelForm):
         # Buscando o usuário e email no banco de dados pra ver se já existe.
         usuario_db = User.objects.filter(username=usuario_data).first()
         email_db = User.objects.filter(email=email_data).first()
-
         error_msg_user_exist = 'Usuário já existe.'
         error_msg_email_exist = 'E-mail já existe.'
         error_msg_pass_match = 'As senhas não coincidem.'
@@ -65,7 +64,7 @@ class UserForm(forms.ModelForm):
                     validation_erros_msg['username'] = error_msg_user_exist 
 
             if email_data:
-                if email_data != email_db:
+                if email_data != email_db.email: #type: ignore 
                     validation_erros_msg['email'] = error_msg_email_exist
 
             if password_data:

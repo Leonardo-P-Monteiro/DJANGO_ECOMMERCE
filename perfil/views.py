@@ -1,8 +1,10 @@
 from typing import Any
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView
 from django.views import View
 from django.http import HttpRequest, HttpResponse
+from django.contrib.auth.models import User
+import copy
 
 from . import forms
 from . import models
@@ -12,14 +14,16 @@ from . import models
 class BasePerfil(View):
     template_name = 'perfil/criar.html'
 
-    def setup(self, *args, **kwargs):
-        super().setup(*args, **kwargs) # Se eu quiser posso passar a "request" pra ele também.
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs) # Se eu quiser posso passar a "request" pra ele também.
         
+        self.carrinho = copy.deepcopy(self.request.session.get('carrinho', {}))
         self.perfil = None
 
         if self.request.user.is_authenticated:
             self.perfil = models.Perfil.objects.\
                 filter(usuario=self.request.user).first()
+            
             self.contexto = {
                 'userform': forms.UserForm(
                     data= self.request.POST or None, 
@@ -27,12 +31,12 @@ class BasePerfil(View):
                     instance = self.request.user,
                 ),
                 'perfilform': forms.PerfilForm(
-                    data= self.request.POST or None
+                    data= self.request.POST or None,
+                    instance= self.perfil
                 )
             }
+
         else:
-
-
             self.contexto = {
             'userform': forms.UserForm(
                 data= self.request.POST or None
@@ -41,7 +45,6 @@ class BasePerfil(View):
                 data= self.request.POST or None
             )
         }
-
 
         self.userform = self.contexto['userform']
         self.perfilform = self.contexto['perfilform']
@@ -60,10 +63,22 @@ class Criar(BasePerfil):
         username = self.userform.cleaned_data.get('username')
         password = self.userform.cleaned_data.get('password')
         email = self.userform.cleaned_data.get('email')
+        first_name = self.userform.cleaned_data.get('first_name')
+        last_name = self.userform.cleaned_data.get('last_name')
 
         # Usuário Logado.
         if self.request.user.is_authenticated:
-            pass
+            usuario = get_object_or_404(User, username=self.request.user.username) #type:ignore
+
+            usuario.username = username
+
+            if password:
+                usuario.set_password(password)
+            
+            usuario.email = email
+            usuario.first_name = first_name
+            usuario.last_name = last_name
+            usuario.save()
 
         # Usuário Não Logado.
         else:
@@ -75,7 +90,8 @@ class Criar(BasePerfil):
             perfil.usuario = usuario
             perfil.save()
 
-
+        self.request.session['carrinho'] = self.carrinho
+        
         return self.renderizar
 
 class Atualizar(View):
