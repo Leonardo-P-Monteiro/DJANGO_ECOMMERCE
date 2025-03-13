@@ -4,11 +4,17 @@
 {% block conteudo %}
 
 <div class='row'>
+    
+    {% if not request.user.is_authenticated %}
+        <div class='col-lg'>
+            <h1>Login</h1>
+        </div>
+    {% endif %}
+
     <div class='col-lg'>
-        <h1>Login</h1>
-    </div>
-    <div class='col-lg'>
+        {% block titulocad %}
         <h1>Cadastro</h1>
+        {% endblock titulocad %}
         <form method='POST' action="">
             {% csrf_token %}
             {{ userform|crispy }}
@@ -16,7 +22,7 @@
             <div class="row">
                 <div class='col'>
                     <button type='submit' class= 'btn btn-primary btn-block 
-                    btn-lg'>
+                        btn-lg'>
                         Enviar
                     </button>
                 </div>

@@ -28,7 +28,7 @@ class UserForm(forms.ModelForm):
     def __init__(self, usuario=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.usuario = usuario
+        self.usuario = usuario # Esse usuário estamos pegando pela request na view.
 
 
     class Meta:
@@ -43,7 +43,7 @@ class UserForm(forms.ModelForm):
         validation_erros_msg = {}
 
         # Pegando os dados do formulário.
-        usuario_data = cleaned.get('username')
+        usuario_data = cleaned.get('username') # Esse é o "username" passado NO formuláro PELO usuário.
         email_data = cleaned.get('email')
         password_data = cleaned.get('password')
         password_2_data = cleaned.get('password_2')
