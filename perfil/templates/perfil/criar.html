@@ -6,14 +6,16 @@
 <div class='row'>
     
     {% if not request.user.is_authenticated %}
-        <div class='col-lg'>
-            <h1>Login</h1>
+        <div class='col-lg' 'mt-3'>
+            <h4>Login</h4>
+            <p> Faça log in em sua conta abaixo: </p>
         </div>
     {% endif %}
 
-    <div class='col-lg'>
+    <div class='col-lg' 'mt-3'>
         {% block titulocad %}
-        <h1>Cadastro</h1>
+        <h4>Cadastro</h4>
+        <p> Não tem cadastro? Faça já o seu: </p>
         {% endblock titulocad %}
         <form method='POST' action="">
             {% csrf_token %}
