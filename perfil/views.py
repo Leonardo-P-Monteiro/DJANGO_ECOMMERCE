@@ -1,5 +1,5 @@
-from typing import Any
-from django.shortcuts import render, get_object_or_404
+from django.contrib import messages
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView
 from django.views import View
 from django.http import HttpRequest, HttpResponse
@@ -84,7 +84,11 @@ class Criar(BasePerfil):
             usuario.last_name = last_name
             usuario.save()
 
-            if not self.perfil:
+            messages.success(
+                self.request,
+                'Você atualizou seu cadastro com sucesso.')
+
+            if not self.perfil: # Aqui é pra caso o perfil de algum usuário seja excluído na área adm. Daí aqui recria ele.
                 self.perfilform.cleaned_data['usuario'] = usuario
                 perfil = models.Perfil(**self.perfilform.cleaned_data)
                 perfil.save()
@@ -92,6 +96,7 @@ class Criar(BasePerfil):
                 perfil = self.perfilform.save(commit=False)
                 perfil.usuario = usuario
                 perfil.save()
+
 
         # Usuário Não Logado.
         else:
@@ -102,6 +107,10 @@ class Criar(BasePerfil):
             perfil = self.perfilform.save(commit=False)
             perfil.usuario = usuario
             perfil.save()
+
+            messages.success(
+                self.request,
+                'Seu cadastro foi realizado com sucesso.')
 
         if password:
             autentica = authenticate(
@@ -117,8 +126,10 @@ class Criar(BasePerfil):
 
         self.request.session['carrinho'] = self.carrinho
         self.request.session.save()
-        
-        return self.renderizar
+
+
+        return redirect('perfil:criar')
+
 
 class Atualizar(View):
     def get(self, *args, **kwargs):
