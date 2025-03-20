@@ -136,9 +136,17 @@ class Atualizar(View):
         return HttpResponse('Atualizar')
 
 class Login(View):
-    def get(self, *args, **kwargs):
+    def post(self, *args, **kwargs):
         return HttpResponse('Login')
 
 class Logout(View):
     def get(self, *args, **kwargs):
-        return HttpResponse('Logout')
+        
+        carrinho = copy.deepcopy(self.request.session.get('carrinho'))
+
+        logout(self.request)
+
+        self.request.session['carrinho'] = carrinho
+        self.request.session.save()
+
+        return redirect('produto:lista')

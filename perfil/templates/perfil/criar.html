@@ -10,7 +10,7 @@
             <h4>Login</h4>
             <p> Faça log in em sua conta abaixo: </p>
 
-            <form method='POST' action=''>
+            <form method='POST' action='{% url "perfil:login" %}'>
                 {% csrf_token %}
                 <div class="form-group">
                   <label for="InputUsuario1">Usuário</label>
