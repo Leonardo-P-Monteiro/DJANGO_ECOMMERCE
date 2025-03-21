@@ -17,14 +17,14 @@ class BasePerfil(View):
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
-        
+
         self.carrinho = copy.deepcopy(self.request.session.get('carrinho', {}))
         self.perfil = None
 
         if self.request.user.is_authenticated:
             self.perfil = models.Perfil.objects.\
                 filter(usuario=self.request.user).first()
-            
+
             self.contexto = {
                 'userform': forms.UserForm(
                     data= self.request.POST or None,
@@ -137,7 +137,37 @@ class Atualizar(View):
 
 class Login(View):
     def post(self, *args, **kwargs):
-        return HttpResponse('Login')
+        username = self.request.POST.get('username')
+        password = self.request.POST.get('password')
+        print(username, '__', password)
+
+        if not username or not password:
+            messages.error(
+                self.request,
+                'Usuário ou senha inválido.'
+            )
+            return redirect('perfil:criar')
+
+        usuario = authenticate(
+                    self.request, 
+                    username=username, 
+                    password=password)
+        
+        if not usuario:
+            messages.error(
+                self.request,
+                'Usuário ou senha inválido.'
+            )
+            return redirect('perfil:criar')
+        
+        login(self.request, user=usuario)
+        messages.success(
+            self.request,
+            'Login feito com sucesso.'
+        )
+
+        return redirect('produto:lista')
+
 
 class Logout(View):
     def get(self, *args, **kwargs):
