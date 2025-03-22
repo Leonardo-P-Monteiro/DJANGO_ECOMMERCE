@@ -130,7 +130,6 @@ class Criar(BasePerfil):
 
         return redirect('perfil:criar')
 
-
 class Atualizar(View):
     def get(self, *args, **kwargs):
         return HttpResponse('Atualizar')
@@ -167,7 +166,6 @@ class Login(View):
         )
 
         return redirect('produto:lista')
-
 
 class Logout(View):
     def get(self, *args, **kwargs):
