@@ -4,6 +4,9 @@ from django.views.generic import ListView
 from django.http import HttpResponse
 from django.contrib import messages
 from produto.models import Variacao
+from utils import utils
+from .models import Pedido, ItemPedido
+from copy import deepcopy
 
 # Create your views here.
 
@@ -74,12 +77,44 @@ class Pagar(View):
                 self.request.session.save()
 
                 return redirect('produto:carrinho')
+        
+        qtd_total_carrinho = utils.cart_total_qtd(carrinho)
+        valor_total_carrinho = utils.cart_totals(carrinho)
 
-        contexto = {
+        pedido = Pedido(
+            usuario = self.request.user,
+            total = valor_total_carrinho,
+            qtd_total = qtd_total_carrinho,
+            status = 'C'
+        )
 
-        }
+        pedido.save()
 
-        return render(self.request, self.template_name, contexto)
+        ItemPedido.objects.bulk_create(
+            [
+                ItemPedido(
+                    pedido = pedido,
+                    produto = i['produto_nome'],
+                    produto_id = i['produto_id'],
+                    variacao = i['variacao_nome'],
+                    variacao_id = i['variacao_id'],
+                    preco = i['preco_quantitativo'],
+                    preco_promocional = i['preco_quantitativo_promocional'],
+                    quantidade = i['quantidade'],
+                    imagem = i['imagem'],
+                ) for i in carrinho.values()
+            ]
+        )
+
+
+        carrinho_pedido = deepcopy(carrinho) # Cópia por precaução.
+        del self.request.session['carrinho']
+
+        contexto = {}
+
+
+        # return render(self.request, self.template_name, contexto)
+        return redirect('pedido:lista')
 
 class SalvarPedido(View):
     def get(self, *args, **kwargs):
@@ -88,3 +123,7 @@ class SalvarPedido(View):
 class Detalhe(View):
     def get(self, *args, **kwargs):
         return HttpResponse('Detalhe')
+
+class Lista(View):
+    def get(self, *args, **kwargs):
+        return HttpResponse('Lista de Pedidos')
