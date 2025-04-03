@@ -10,14 +10,23 @@ from copy import deepcopy
 
 # Create your views here.
 
-class DispatchLoginRequired(View): # Fizemos isso aqui para evitar que pessoas que não estejam logadas consigam ver pedidos. 
+class DispatchLoginRequiredMixin(View): # Fizemos isso aqui para evitar que pessoas que não estejam logadas consigam ver pedidos. 
     def dispatch(self, request, *args, **kwargs):
-        if not self.request.user.is_authenticated:
+        if not self.request.user.is_authenticated: # Analisando o contexto da sitaução, nós poderíamos fazer esse trecho de código dentro do método setup(), pois ao meu ver ele seria o melhor local para realizar essa validação.
             return redirect('perfil:criar')
 
         return super().dispatch(request, *args, **kwargs)
+    
+    def get_queryset(self, *args, **kwargs): # Fizemos isso aqui pra evitar que os clientes consigam ver pedidos de outros cliente quando estão logados.
+        qs = super().get_queryset(*args, **kwargs)
+        qs = qs.filter(usuario=self.request.user)
 
-class Pagar(DispatchLoginRequired, DetailView):
+        return qs
+
+        # Esse método get_queryset não está sobrescrevendo ninguém da herança que vem da View. 
+        # Ele vai sobrescrever os métodos get_queryset das CBV DetailView e ListView.
+
+class Pagar(DispatchLoginRequiredMixin, DetailView):
     
     """
     É nessa view que iríamos inserir os métodos de pagamento ou até mesmo 
@@ -30,10 +39,6 @@ class Pagar(DispatchLoginRequired, DetailView):
     pk_url_kwarg = 'pk'
     context_object_name = 'pedido'
 
-    def get_queryset(self, *args, **kwargs): # Fizemos isso aqui pra evitar que os clientes consigam ver pedidos de outros cliente quando estão logados.
-        qs = super().get_queryset(*args, **kwargs)
-        qs = qs.filter().filter(usuario=self.request.user)
-        return qs
 
 class SalvarPedido(View):
 
@@ -135,10 +140,15 @@ class SalvarPedido(View):
         # return render(self.request, self.template_name, contexto)
         return redirect('pedido:pagar', pedido.pk)
 
-class Detalhe(View):
-    def get(self, *args, **kwargs):
-        return HttpResponse('Detalhe')
+class Detalhe(DispatchLoginRequiredMixin, DetailView):
+    model = Pedido
+    context_object_name = 'pedido'
+    template_name = 'pedido/detalhe.html'
+    pk_url_kwarg = 'pk'
 
-class Lista(View):
-    def get(self, *args, **kwargs):
-        return HttpResponse('Lista de Pedidos')
+class Lista(DispatchLoginRequiredMixin, ListView):
+    model = Pedido
+    context_object_name = 'pedidos'
+    template_name = 'pedido/lista.html'
+    paginate_by = 10
+    ordering = '-id'
