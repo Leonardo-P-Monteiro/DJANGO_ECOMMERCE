@@ -1,6 +1,6 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 from django.views import View
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from django.http import HttpResponse
 from django.contrib import messages
 from produto.models import Variacao
@@ -10,13 +10,32 @@ from copy import deepcopy
 
 # Create your views here.
 
-class Pagar(View):
+class DispatchLoginRequired(View): # Fizemos isso aqui para evitar que pessoas que não estejam logadas consigam ver pedidos. 
+    def dispatch(self, request, *args, **kwargs):
+        if not self.request.user.is_authenticated:
+            return redirect('perfil:criar')
+
+        return super().dispatch(request, *args, **kwargs)
+
+class Pagar(DispatchLoginRequired, DetailView):
     
     """
     É nessa view que iríamos inserir os métodos de pagamento ou até mesmo 
     o cálculo de frete (o correto é ser exibido também na página de anúncio 
     do produto) em uma situação real. 
     """
+
+    template_name = 'pedido/pagar.html'
+    model = Pedido
+    pk_url_kwarg = 'pk'
+    context_object_name = 'pedido'
+
+    def get_queryset(self, *args, **kwargs): # Fizemos isso aqui pra evitar que os clientes consigam ver pedidos de outros cliente quando estão logados.
+        qs = super().get_queryset(*args, **kwargs)
+        qs = qs.filter().filter(usuario=self.request.user)
+        return qs
+
+class SalvarPedido(View):
 
     template_name = 'pedido/pagar.html'
     
@@ -114,11 +133,7 @@ class Pagar(View):
 
 
         # return render(self.request, self.template_name, contexto)
-        return redirect('pedido:lista')
-
-class SalvarPedido(View):
-    def get(self, *args, **kwargs):
-        return HttpResponse('Fechar Pedido')
+        return redirect('pedido:pagar', pedido.pk)
 
 class Detalhe(View):
     def get(self, *args, **kwargs):
