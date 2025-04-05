@@ -2,6 +2,8 @@
 
 {% load static %}
 
+{% block titulo %} Pedido Nº {{ pedido.pk }} {% endblock  %}
+
 {% block conteudo %}
 
 {% include "parciais/_pedido.html" %}
