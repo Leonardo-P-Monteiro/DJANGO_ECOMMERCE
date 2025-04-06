@@ -1,4 +1,4 @@
-# DJANGO_ECOMMERCE
+# DJANGO_ECOMMERCE 
 
 Uma plataforma de e-commerce desenvolvida utilizando o framework web Python Django.
 
