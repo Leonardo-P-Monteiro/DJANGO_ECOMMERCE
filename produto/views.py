@@ -8,6 +8,7 @@ from . import models
 from perfil.models import Perfil
 from django.contrib import messages
 from pprint import pprint
+from django.db.models import Q
 
 # Create your views here.
 
@@ -16,9 +17,50 @@ class ListaProdutos(ListView):
     model = models.Produto
     template_name = 'produto/lista.html'
     context_object_name = 'produtos'
-    paginate_by = 10
+    paginate_by = 5
     ordering = '-id'
+
+class Busca(ListaProdutos):
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.termo = ''
+
+
+    def setup(self, request, *args, **kwargs):
+        
+        self.termo = request.GET.get('termo', '').strip()
+
+        return super().setup(request, *args, **kwargs)
+
+    def get_queryset(self, *args, **kwargs):
+        q = super().get_queryset()
+        
+        if not self.termo:
+            return q
+
+        q = q.filter(
+            Q(nome__contains= self.termo) |
+            Q(descricao_longa__contains= self.termo) |
+            Q(descricao_curta__contains= self.termo)
+            )
+
+        return q
     
+    def get_context_data(self, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+        context['termo'] = self.termo
+
+        return context
+    
+    def get(self, request, *args, **kwargs):
+
+        if self.termo.isspace():
+            redirect('produto:lista')
+        
+        return super().get(request, *args, **kwargs)
+
 class DetlheProdutos(DetailView):
     model = models.Produto
     template_name = 'produto/detalhe.html'
