@@ -2,6 +2,8 @@
 
 Uma plataforma de e-commerce desenvolvida utilizando o framework web Python Django.
 
+Link para acesso no [pythonanywhere](https://ecommercedjango.pythonanywhere.com/)
+
 ![image](https://github.com/user-attachments/assets/c3543efe-c0fc-4660-a866-6bf47a678a06)
 ![image](https://github.com/user-attachments/assets/c5da64ee-2b71-4eed-a8b6-3a51c0fe723b)
 ![image](https://github.com/user-attachments/assets/40d190f7-c241-4814-83b4-a399054ade8a)
