@@ -3,6 +3,18 @@
 Uma plataforma de e-commerce desenvolvida utilizando o framework web Python Django.
 
 ![image](https://github.com/user-attachments/assets/c3543efe-c0fc-4660-a866-6bf47a678a06)
+![image](https://github.com/user-attachments/assets/c5da64ee-2b71-4eed-a8b6-3a51c0fe723b)
+![image](https://github.com/user-attachments/assets/40d190f7-c241-4814-83b4-a399054ade8a)
+![image](https://github.com/user-attachments/assets/f6525f79-641e-40f8-aba1-c22576462278)
+![image](https://github.com/user-attachments/assets/9d838d9f-4ed7-4920-8f87-ee1aee41b56c)
+![image](https://github.com/user-attachments/assets/3c736b09-024d-4151-89ef-52e5b32081cf)
+![image](https://github.com/user-attachments/assets/9dc01f05-1647-4174-9d7c-680c82ad6b93)
+
+
+
+
+
+
 
 
 ## 📖 Descrição
