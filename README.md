@@ -9,7 +9,6 @@ Link para acesso no [pythonanywhere](https://ecommercedjango.pythonanywhere.com/
 ![image](https://github.com/user-attachments/assets/40d190f7-c241-4814-83b4-a399054ade8a)
 ![image](https://github.com/user-attachments/assets/f6525f79-641e-40f8-aba1-c22576462278)
 ![image](https://github.com/user-attachments/assets/9d838d9f-4ed7-4920-8f87-ee1aee41b56c)
-![image](https://github.com/user-attachments/assets/3c736b09-024d-4151-89ef-52e5b32081cf)
 ![image](https://github.com/user-attachments/assets/9dc01f05-1647-4174-9d7c-680c82ad6b93)
 
 
