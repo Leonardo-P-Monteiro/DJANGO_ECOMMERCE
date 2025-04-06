@@ -2,6 +2,9 @@
 
 Uma plataforma de e-commerce desenvolvida utilizando o framework web Python Django.
 
+![image](https://github.com/user-attachments/assets/c3543efe-c0fc-4660-a866-6bf47a678a06)
+
+
 ## 📖 Descrição
 
 Este projeto tem como objetivo criar uma aplicação web de e-commerce funcional, permitindo aos usuários navegar por produtos, adicioná-los ao carrinho e (potencialmente) finalizar compras. Ele serve como um exemplo prático da aplicação dos conceitos do Django na construção de sites dinâmicos e interativos.
