@@ -77,7 +77,7 @@ class SalvarPedido(View):
             if estoque == 0:
                 
                 messages.warning( self.request,
-                                f'O item {carrinho[vid]['produto_nome']} \
+                                f'O item {carrinho[vid]["produto_nome"]} \
                                 foi removido do carrinho por falta de estoque')
 
                 del carrinho[vid]
