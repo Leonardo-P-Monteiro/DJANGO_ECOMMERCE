@@ -158,7 +158,7 @@ class AdicionarAoCarrinho(View):
         messages.success(
             self.request, 
             f'O produto {variacao_nome} foi adicionado ao carrinho. \
-                Quantidade no carrinho: {x['quantidade']}'
+                Quantidade no carrinho: REMOVIDO PQ TAVA DANDO ERRO NO UPLOAD.'
                          )
 
         return redirect(http_referer)
