@@ -157,7 +157,7 @@ class AdicionarAoCarrinho(View):
         messages.success(
             self.request, 
             f'O produto {variacao_nome} foi adicionado ao carrinho. \
-                Quantidade no carrinho: {carrinho[variacao_id]['quantidade']}'
+                Quantidade no carrinho: {carrinho[variacao_id]["quantidade"]}'
                          )
 
         return redirect(http_referer)
@@ -183,7 +183,7 @@ class RemoverDoCarrinho(View):
         
 
         messages.success(self.request,
-                         f'O item "{carrinho['produto_nome']}" foi removido \
+                         f'O item "{carrinho["produto_nome"]}" foi removido \
                              do seu carrinho.')
 
         
