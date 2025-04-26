@@ -9,7 +9,7 @@ from perfil.models import Perfil
 from django.contrib import messages
 from pprint import pprint
 from django.db.models import Q
-
+ 
 # Create your views here.
 
 
